@@ -1,0 +1,46 @@
+{
+  "name": "duniter-prover",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --growl --timeout 10000 test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:duniter/duniter-prover.git"
+  },
+  "keywords": [
+    "duniter",
+    "ucoin",
+    "openudc",
+    "libremoney",
+    "crypto-currency"
+  ],
+  "author": "Cedric Moreau <cem.moreau@gmail.com>",
+  "license": "AGPL-3.0",
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/duniter/duniter-prover/issues"
+  },
+  "dependencies": {
+    "async": "2.1.4",
+    "co": "4.6.0",
+    "duniter-common": "duniter/duniter-common",
+    "duniter-crawler": "duniter/duniter-crawler",
+    "duniter-keypair": "duniter/duniter-keypair",
+    "inquirer": "2.0.0",
+    "moment": "2.17.1",
+    "multimeter": "0.1.1",
+    "node-uuid": "1.4.7",
+    "q": "1.4.1",
+    "querablep": "0.1.0",
+    "request": "2.75.0",
+    "request-promise": "4.1.1",
+    "underscore": "1.8.3"
+  },
+  "devDependencies": {
+    "duniter": "duniter/duniter#dev",
+    "mocha": "3.2.0",
+    "should": "11.1.2"
+  }
+}
