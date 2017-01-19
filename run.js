@@ -4,6 +4,10 @@ const co = require('co');
 const stack = require('duniter').statics.autoStack();
 
 co(function*() {
-  yield stack.executeStack(process.argv);
+  try {
+    yield stack.executeStack(process.argv);
+  } catch(e) {
+    console.error(e);
+  }
   process.exit();
 });

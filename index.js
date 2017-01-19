@@ -14,14 +14,14 @@ module.exports = {
 
     /*********** Permanent prover **************/
     config: {
-      onLoading: (server, conf) => co(function*() {
+      onLoading: (conf) => co(function*() {
         if (conf.cpu === null || conf.cpu === undefined) {
           conf.cpu = constants.DEFAULT_CPU;
         }
         conf.powSecurityRetryDelay = constants.POW_SECURITY_RETRY_DELAY;
         conf.powMaxHandicap = constants.POW_MAXIMUM_ACCEPTABLE_HANDICAP;
       }),
-      beforeSave: (server, conf) => co(function*() {
+      beforeSave: (conf) => co(function*() {
         delete conf.powSecurityRetryDelay;
         delete conf.powMaxHandicap;
       })
@@ -32,9 +32,15 @@ module.exports = {
     },
 
     methods: {
+      blockProver: blockProver,
       prover: (server, conf, logger) => new Prover(server, conf, logger),
       blockGenerator: (server, conf, logger) => blockGenerator(server),
-      generateTheNext: (server, block, trial, manualValues) => co(function*() {
+      generateTheNextBlock: (server, manualValues) => co(function*() {
+        const prover = blockProver(server);
+        const generator = blockGenerator(server, prover);
+        return generator.nextBlock(manualValues);
+      }),
+      generateAndProveTheNext: (server, block, trial, manualValues) => co(function*() {
         const prover = blockProver(server);
         const generator = blockGenerator(server, prover);
         return generator.makeNextBlock(block, trial, manualValues);
@@ -137,26 +143,15 @@ function proveAndSend(program, server, block, issuer, difficulty, host, port, do
         try {
           const prover = blockProver(server);
           const proven = yield prover.prove(block, difficulty);
-          next(null, proven);
-        } catch(e) {
-          next(e);
-        }
-      });
-    },
-    function (block, next) {
-      const Peer = server.lib.peer;
-      const peer = new Peer({
-        endpoints: [['BASIC_MERKLED_API', host, port].join(' ')]
-      });
-      program.show && console.log(block.getRawSigned());
-      logger.info('Posted block ' + block.quickDescription());
-      co(function*(){
-        try {
-          yield contacter.sendBlock(peer, block);
+          const Peer = server.lib.Peer;
+          const peer = new Peer({
+            endpoints: [['BASIC_MERKLED_API', host, port].join(' ')]
+          });
+          program.show && console.log(proven.getRawSigned());
+          logger.info('Posted block ' + proven.quickDescription());
           const p = Peer.statics.peerize(peer);
-          const contact = contacter(p.getHostPreferDNS(), p.getPort(), opts);
-          yield contact.postBlock(block.getRaw());
-          next();
+          const contact = contacter(p.getHostPreferDNS(), p.getPort());
+          yield contact.postBlock(proven.getRawSigned());
         } catch(e) {
           next(e);
         }
