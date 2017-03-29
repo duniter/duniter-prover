@@ -23,18 +23,18 @@
     "url": "https://github.com/duniter/duniter-prover/issues"
   },
   "dependencies": {
-    "async": "2.1.4",
+    "async": "2.2.0",
     "co": "4.6.0",
     "duniter-common": "^1.0.0",
     "duniter-crawler": "^1.0.1",
-    "inquirer": "0.8.5",
-    "moment": "2.17.1",
+    "inquirer": "3.0.6",
+    "moment": "2.18.1",
     "multimeter": "0.1.1",
-    "node-uuid": "1.4.7",
-    "q": "1.4.1",
+    "node-uuid": "1.4.8",
+    "q": "1.5.0",
     "querablep": "0.1.0",
-    "request": "2.75.0",
-    "request-promise": "4.1.1",
+    "request": "2.81.0",
+    "request-promise": "4.2.0",
     "underscore": "1.8.3"
   },
   "devDependencies": {
