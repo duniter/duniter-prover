@@ -28,10 +28,22 @@ module.exports = {
     },
 
     service: {
-      output: (server, conf, logger) => new Prover(server, conf, logger)
+      output: (server, conf, logger) => {
+        const generator = blockGenerator(server);
+        server.generatorGetJoinData     = generator.getSinglePreJoinData.bind(generator)
+        server.generatorComputeNewCerts = generator.computeNewCerts.bind(generator)
+        server.generatorNewCertsToLinks = generator.newCertsToLinks.bind(generator)
+        return new Prover(server, conf, logger)
+      }
     },
 
     methods: {
+      hookServer: (server) => {
+        const generator = blockGenerator(server);
+        server.generatorGetJoinData     = generator.getSinglePreJoinData.bind(generator)
+        server.generatorComputeNewCerts = generator.computeNewCerts.bind(generator)
+        server.generatorNewCertsToLinks = generator.newCertsToLinks.bind(generator)
+      },
       blockProver: blockProver,
       prover: (server, conf, logger) => new Prover(server, conf, logger),
       blockGenerator: (server, conf, logger) => blockGenerator(server),
