@@ -66,6 +66,29 @@ module.exports = {
       })
     }, {
       name: 'gen-root [host] [port] [difficulty]',
+      desc: 'Tries to generate the next block of the blockchain.',
+      onDatabaseExecute: (server, conf, program, params) => co(function*() {
+        const host = params[0];
+        const port = params[1];
+        const difficulty = params[2];
+        const generator = blockGenerator(server, null);
+        let toDelete, catched = true;
+        do {
+          try {
+            yield generateAndSend(program, host, port, difficulty, server, (server) => generator.nextBlock);
+            catched = false;
+          } catch (e) {
+            toDelete = yield server.dal.idtyDAL.query('SELECT * FROM idty i WHERE 5 > (SELECT count(*) from cert c where c.`to` = i.pubkey)');
+            console.log('Deleting', toDelete.map(i => i.pubkey));
+            yield server.dal.idtyDAL.exec('DELETE FROM idty WHERE pubkey IN ('  + toDelete.map(i => "'" + i.pubkey + "'").join(',') + ')');
+            yield server.dal.idtyDAL.exec('DELETE FROM cert WHERE `to` IN ('  + toDelete.map(i => "'" + i.pubkey + "'").join(',') + ')');
+            yield server.dal.idtyDAL.exec('DELETE FROM cert WHERE `from` IN ('  + toDelete.map(i => "'" + i.pubkey + "'").join(',') + ')');
+          }
+        } while (catched && toDelete.length);
+        console.log('Done');
+      })
+    }, {
+      name: 'gen-root-choose [host] [port] [difficulty]',
       desc: 'Tries to generate root block, with choice of root members.',
       onDatabaseExecute: (server, conf, program, params, startServices, stopServices) => co(function*() {
         const host = params[0];
