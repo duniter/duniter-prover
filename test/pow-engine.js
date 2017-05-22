@@ -83,13 +83,13 @@ describe('PoW Engine', () => {
         block: {
           number: 35,
           time: 1,
-          inner_hash: '785EEAC3FB737D67FA56B9C82F5F6E7D4DF87988FF1785AFD4A080272C0C9414',
-          nonce: 202,
-          hash: '00729594838C945EC291D00997FB8C4254B3949CFE8295A68C78A9FAABE90106',
-          signature: 'cTFtHlldwptnm6hjw+f0DzkUtYiCbhHAnxXsj1B7V6V8tDUcFNNlGAPqZvVXrZevwjkAGm0pgdUCrdFGB6+FCw=='
+          inner_hash: '51937F1192447A96537D10968689F4F48859E2DD6F8F9E8DE1006C9697C6C940',
+          nonce: 212,
+          hash: '009A52E6E2E4EA7DE950A2DA673114FA55B070EBE350D75FF0C62C6AAE9A37E5',
+          signature: 'bkmLGX7LNVkuOUMc+/HT6fXJajQtR5uk87fetIntMbGRZjychzu0whl5+AOOGlf+ilp/ara5UK6ppxyPcJIJAg=='
         },
-        testsCount: 201,
-        pow: '00729594838C945EC291D00997FB8C4254B3949CFE8295A68C78A9FAABE90106',
+        testsCount: 211,
+        pow: '009A52E6E2E4EA7DE950A2DA673114FA55B070EBE350D75FF0C62C6AAE9A37E5',
       }
     });
   }));

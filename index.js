@@ -3,10 +3,13 @@
 const co = require('co');
 const async = require('async');
 const contacter = require('duniter-crawler').duniter.methods.contacter;
+const common = require('duniter-common');
 const constants = require('./lib/constants');
 const Prover = require('./lib/prover');
 const blockGenerator = require('./lib/blockGenerator');
 const blockProver = require('./lib/blockProver');
+
+const Peer = common.document.Peer
 
 module.exports = {
 
@@ -145,7 +148,7 @@ function generateAndSend(program, host, port, difficulty, server, getGenerationM
           program.show && console.log(block.getRawSigned());
           co(function*(){
             try {
-              const parsed = server.lib.parsers.parseBlock.syncWrite(block.getRawSigned());
+              const parsed = common.parsers.parseBlock.syncWrite(block.getRawSigned());
               yield server.BlockchainService.checkBlock(parsed, false);
               logger.info('Acceptable block');
               next();
@@ -180,13 +183,12 @@ function proveAndSend(program, server, block, issuer, difficulty, host, port, do
         try {
           const prover = blockProver(server);
           const proven = yield prover.prove(block, difficulty);
-          const Peer = server.lib.Peer;
-          const peer = new Peer({
+          const peer = Peer.fromJSON({
             endpoints: [['BASIC_MERKLED_API', host, port].join(' ')]
           });
           program.show && console.log(proven.getRawSigned());
           logger.info('Posted block ' + proven.quickDescription());
-          const p = Peer.statics.peerize(peer);
+          const p = Peer.fromJSON(peer);
           const contact = contacter(p.getHostPreferDNS(), p.getPort());
           yield contact.postBlock(proven.getRawSigned());
         } catch(e) {
