@@ -65,8 +65,9 @@ module.exports = {
     /*********** CLI gen-next + gen-root **************/
 
     cliOptions: [
-      {value: '--show', desc: 'With gen-next or gen-root commands, displays the generated block.'},
-      {value: '--check', desc: 'With gen-next: just check validity of generated block.'}
+      {value: '--show',  desc: 'With gen-next or gen-root commands, displays the generated block.'},
+      {value: '--check', desc: 'With gen-next: just check validity of generated block.'},
+      {value: '--at <medianTime>', desc: 'With gen-next --show --check: allows to try in a future time.', parser: parseInt }
     ],
 
     cli: [{
@@ -135,7 +136,13 @@ function generateAndSend(program, host, port, difficulty, server, getGenerationM
         const method = getGenerationMethod(server);
         co(function*(){
           try {
-            const block = yield method();
+            const simulationValues = {}
+            if (program.show && program.check) {
+              if (program.at && !isNaN(program.at)) {
+                simulationValues.medianTime = program.at
+              }
+            }
+            const block = yield method(null, simulationValues);
             next(null, block);
           } catch(e) {
             next(e);
