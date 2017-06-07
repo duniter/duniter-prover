@@ -135,18 +135,14 @@ function generateAndSend(program, host, port, difficulty, server, getGenerationM
       function (next) {
         const method = getGenerationMethod(server);
         co(function*(){
-          try {
-            const simulationValues = {}
-            if (program.show && program.check) {
-              if (program.at && !isNaN(program.at)) {
-                simulationValues.medianTime = program.at
-              }
+          const simulationValues = {}
+          if (program.show && program.check) {
+            if (program.at && !isNaN(program.at)) {
+              simulationValues.medianTime = program.at
             }
-            const block = yield method(null, simulationValues);
-            next(null, block);
-          } catch(e) {
-            next(e);
           }
+          const block = yield method(null, simulationValues);
+          next(null, block);
         });
       },
       function (block, next) {
@@ -165,7 +161,7 @@ function generateAndSend(program, host, port, difficulty, server, getGenerationM
           });
         }
         else {
-          logger.debug('Block to be sent: %s', block.quickDescription());
+          logger.debug('Block to be sent: %s', block.getRawInnerPart());
           async.waterfall([
             function (next) {
               proveAndSend(program, server, block, server.conf.pair.pub, parseInt(difficulty), host, parseInt(port), next);
@@ -194,7 +190,7 @@ function proveAndSend(program, server, block, issuer, difficulty, host, port, do
             endpoints: [['BASIC_MERKLED_API', host, port].join(' ')]
           });
           program.show && console.log(proven.getRawSigned());
-          logger.info('Posted block ' + proven.quickDescription());
+          logger.info('Posted block ' + proven.getRawSigned());
           const p = Peer.fromJSON(peer);
           const contact = contacter(p.getHostPreferDNS(), p.getPort());
           yield contact.postBlock(proven.getRawSigned());
