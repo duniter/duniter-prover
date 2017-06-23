@@ -49,7 +49,7 @@ module.exports = {
       },
       blockProver: blockProver,
       prover: (server, conf, logger) => new Prover(server, conf, logger),
-      blockGenerator: (server, conf, logger) => blockGenerator(server),
+      blockGenerator: (server, prover) => blockGenerator(server, prover),
       generateTheNextBlock: (server, manualValues) => co(function*() {
         const prover = blockProver(server);
         const generator = blockGenerator(server, prover);
